@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NPC | Visual Architect & Colorist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --text: #ffffff;
+            --accent: #ff3e60;
+            --muted: #888888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient-mesh: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                            radial-gradient(at 50% 0%, hsla(225,39%,30%,0.4) 0, transparent 50%), 
+                            radial-gradient(at 100% 0%, hsla(339,49%,30%,0.4) 0, transparent 50%);
+            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        [data-theme="light"] {
+            --bg: #fcfcfc;
+            --text: #050505;
+            --muted: #666666;
+            --glass: rgba(0, 0, 0, 0.03);
+            --border: rgba(0, 0, 0, 0.1);
+            --gradient-mesh: radial-gradient(at 0% 0%, hsla(0,0%,98%,1) 0, transparent 50%), 
+                            radial-gradient(at 50% 0%, hsla(225,39%,80%,0.5) 0, transparent 50%), 
+                            radial-gradient(at 100% 0%, hsla(339,49%,80%,0.5) 0, transparent 50%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            transition: background-color 0.5s ease;
+            width: 100%;
+        }
+        h1, h2, h3, .logo { font-family: 'Syne', sans-serif; text-transform: uppercase; }
+        
+        .canvas-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -2; background: var(--gradient-mesh); 
+            filter: blur(40px); transition: var(--transition); 
+        }
+
+        nav { position: fixed; top: 0; width: 100%; padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 4px; cursor: pointer; }
+        .nav-right { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { text-decoration: none; color: var(--text); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; transition: var(--transition); }
+        .nav-link:hover { opacity: 1; }
+        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; }
+
+        .hero { 
+            height: 100vh; width: 100vw; position: relative; 
+            display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; text-align: center;
+        }
+        .hero-content { z-index: 10; width: 100%; max-width: 900px; padding: 0 20px; }
+        .hero-content h1 { 
+            font-size: clamp(2.5rem, 10vw, 8rem); 
+            line-height: 0.9; font-weight: 800; margin-bottom: 1.5rem; 
+            letter-spacing: -2px; width: 100%; 
+        }
+        .hero-content p { font-size: clamp(0.9rem, 2vw, 1.1rem); color: var(--muted); letter-spacing: 1px; margin-bottom: 3rem; font-weight: 300; }
+        
+        .orbit-item { 
+            position: absolute; border-radius: 20px; overflow: hidden; 
+            border: 1px solid var(--border); transition: var(--transition); 
+            animation: float 6s ease-in-out infinite; background: var(--glass); 
+            backdrop-filter: blur(10px); z-index: 1;
+        }
+        .orbit-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .orbit-item:hover { border-color: var(--text); transform: scale(1.1) rotate(0deg) !important; z-index: 20; }
+        .orbit-item:hover img { opacity: 1; }
+        .orbit-1 { width: 180px; height: 240px; top: 15%; left: 8%; animation-delay: 0s; }
+        .orbit-2 { width: 240px; height: 160px; top: 12%; right: 8%; animation-delay: 1s; }
+        .orbit-3 { width: 150px; height: 150px; bottom: 15%; left: 12%; animation-delay: 2s; }
+        .orbit-4 { width: 200px; height: 320px; bottom: 10%; right: 10%; animation-delay: 3s; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
+
+        .cta-main { padding: 1.2rem 3rem; background: var(--text); color: var(--bg); text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; border-radius: 100px; transition: var(--transition); cursor: pointer; border: none; }
+        .cta-main:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+
+        .brands-section { padding: 40px 0; overflow: hidden; background: var(--glass); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .brand-track { display: flex; width: calc(200px * 10); animation: scroll 20s linear infinite; gap: 60px; align-items: center; }
+        .brand-item { width: 150px; filter: grayscale(1) opacity(0.5); transition: var(--transition); }
+        .brand-item:hover { filter: grayscale(0) opacity(1); transform: scale(1.1); }
+        .brand-item img { width: 100%; height: auto; object-fit: contain; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-200px * 5)); } }
+
+        section { padding: 100px 8%; max-width: 1400px; margin: 0 auto; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
+        .section-header h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1; }
+        .section-header span { font-size: 0.8rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        .portfolio-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 30px; 
+            grid-auto-flow: dense; 
+        }
+        .work-card { 
+            position: relative; background: var(--glass); 
+            border: 1px solid var(--border); border-radius: 24px; 
+            overflow: hidden; cursor: pointer; transition: var(--transition); 
+        }
+        .work-card:hover { border-color: var(--text); transform: translateY(-10px); }
+        .work-thumb { width: 100%; object-fit: cover; transition: var(--transition); }
+        .landscape { aspect-ratio: 16/9; }
+        .portrait { aspect-ratio: 9/16; grid-row: span 2; }
+        .work-card:hover .work-thumb { transform: scale(1.05); opacity: 0.5; }
+        .work-info { 
+            position: absolute; bottom: 0; left: 0; width: 100%; 
+            padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); 
+            display: flex; flex-direction: column; gap: 5px; 
+        }
+        .work-top-row { display: flex; justify-content: space-between; align-items: center; }
+        .work-platform { font-size: 0.65rem; letter-spacing: 1px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+        .work-note { font-size: 0.75rem; color: var(--muted); font-weight: 300; font-style: italic; }
+        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; opacity: 0; transition: var(--transition); pointer-events: none; }
+        .work-card:hover .play-icon { opacity: 1; }
+
+        #videoModal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:3000; display:none; justify-content:center; align-items:center; padding: 20px; }
+        .modal-content { width: 100%; max-width: 1100px; aspect-ratio: 16/9; position: relative; }
+        .modal-content iframe { width: 100%; height: 100%; border: none; border-radius: 20px; }
+        .close-modal { position: absolute; top: -60px; right: 0; color: white; font-size: 2.5rem; cursor: pointer; }
+
+        /* BEFORE/AFTER SECTION - UPDATED FOR IFRAMES */
+        .comparison-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 1100px; 
+            height: 600px; 
+            margin: 0 auto; 
+            overflow: hidden; 
+            border-radius: 30px; 
+            border: 1px solid var(--border); 
+            background: #000;
+        }
+        .comparison-iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            pointer-events: none; /* Allows the slider to be clicked through the iframe */
+        }
+        .iframe-after { 
+            z-index: 2; 
+            clip-path: inset(0 0 0 50%); 
+        }
+        .comparison-slider { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 3; 
+            appearance: none; 
+            background: transparent; 
+            cursor: ew-resize; 
+            margin: 0; 
+        }
+        .comparison-slider::-webkit-slider-thumb { appearance: none; width: 4px; height: 100vh; background: white; cursor: ew-resize; }
+        .slider-label { position: absolute; top: 30px; padding: 10px 20px; background: rgba(0,0,0,0.6); color: white; font-size: 0.7rem; z-index: 4; border-radius: 50px; pointer-events: none; }
+        .label-before { left: 30px; } .label-after { right: 30px; }
+
+        .animation-marquee { display: flex; gap: 30px; overflow: hidden; padding: 40px 0; }
+        .marquee-track { display: flex; gap: 30px; animation: run 30s linear infinite; }
+        .gif-item { width: 400px; height: 300px; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; transition: var(--transition); cursor: pointer; }
+        .gif-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gif-item:hover { transform: scale(1.05); border-color: var(--accent); }
+        @keyframes run { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .stills-bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 300px); gap: 20px; }
+        .bento-item { position: relative; overflow: hidden; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); transition: var(--transition); }
+        .bento-item img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .bento-item:hover img { transform: scale(1.1); filter: brightness(1.1); }
+        .bento-1 { grid-column: span 2; grid-row: span 2; }
+        .bento-4 { grid-column: span 2; }
+
+        #booking-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; justify-content: center; align-items: center; }
+        .booking-container { width: 100%; max-width: 500px; padding: 2rem; }
+        .input-group { margin-bottom: 1.5rem; }
+        .input-group label { display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--muted); }
+        .input-group input, .input-group textarea { width: 100%; background: none; border: none; border-bottom: 1px solid var(--border); padding: 1rem 0; color: var(--text); outline: none; }
+        .close-booking { position: absolute; top: 40px; right: 40px; background: none; border: none; color: var(--text); font-size: 2rem; cursor: pointer; }
+        
+        footer { padding: 100px 5%; text-align: center; border-top: 1px solid var(--border); }
+        .socials { display: flex; justify-content: center; gap: 3rem; margin-bottom: 3rem; }
+        .social-link { color: var(--text); text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; opacity: 0.5; transition: var(--transition); }
+        .social-link:hover { opacity: 1; transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            nav { padding: 1rem 5%; }
+            .hero-content h1 { font-size: 3.5rem; line-height: 1; }
+            .orbit-item { display: none; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .portrait { grid-row: span 1; aspect-ratio: 9/16; height: 500px; }
+            .comparison-container { height: 400px; }
+            .stills-bento { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .bento-1, .bento-4 { grid-column: span 1; height: 300px; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="canvas-bg"></div>
+
+    <nav>
+        <div class="logo">NPC</div>
+        <div class="nav-right">
+            <a href="#portfolio" class="nav-link">Portfolio</a>
+            <button class="theme-btn" onclick="toggleTheme()">◐</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="orbit-item orbit-1"><img src="https://i.im.ge/QMI0TiW/Beige_Modern_Minimal_Ugc_Content_Creator_Creative_CV_Resume.jpg" alt="Orbit 1"></div>
+            <div class="orbit-item orbit-2"><img src="https://i.im.ge/QMIaOI1/Timeline_6_01_00_08_16.jpg" alt="Orbit 2"></div>
+            <div class="orbit-item orbit-3"><img src="https://i.im.ge/QMIa1Ef/Timeline_5_01_00_01_23.jpg" alt="Orbit 3"></div>
+            <div class="orbit-item orbit-4"><img src="https://i.im.ge/QMIa7uT/Timeline_5_01_00_02_26.jpg" alt="Orbit 4"></div>
+
+            <div class="hero-content">
+                <h1>COLOR <br> ARCHITECT</h1>
+                <p>Transforming raw footage into cinematic experiences <br>through strategic color grading & motion design.</p>
+                <button class="cta-main" onclick="openBooking()">BOOK A CONSULTATION</button>
+            </div>
+        </section>
+
+        <div class="brands-section">
+            <div class="brand-track">
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121569/imgi_1_google_PNG19644.png" alt="Brand 1"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121569/TATA-TISCON-Logo-PNG.png"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121568/Groww_LOGO_-_WHITE.png"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121567/imgi_9_default.png" alt="Brand 4"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121567/DSM_LOGO_vectorized.png"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121363/imgi_1_Tata-Structura-Logo-Vector-PNG-1024x391-1.png"></div>
+                <div class="brand-item"><img src="https://res.cloudinary.com/svozvjmq/image/upload/v1789121916/imgi_1_InCred-Group-Logo-01.png" alt="Brand 2"></div>
+                <div class="brand-item"><img src="https://via.placeholder.com/150x50?text=LOGO+3" alt="Brand 3"></div>
+                <div class="brand-item"><img src="https://via.placeholder.com/150x50?text=LOGO+4" alt="Brand 4"></div>
+                <div class="brand-item"><img src="https://via.placeholder.com/150x50?text=LOGO+5" alt="Brand 5"></div>
+            </div>
+        </div>
+
+        <section id="portfolio">
+            <div class="section-header"><span>01. Selected Works</span><h2>VISUAL SLITS</h2></div>
+            
+            <div class="portfolio-grid">
+                <div class="work-card portrait" onclick="openVideo('https://www.youtube.com/embed/VIDEO_ID_1')">
+                    <img src="https://via.placeholder.com/300x533" class="work-thumb" alt="Thumb">
+                    <div class="play-icon">▶</div>
+                    <div class="work-info">
+                        <div class="work-top-row">
+                            <span class="work-platform">Instagram Reel</span>
+                            <a href="https://instagram.com" target="_blank" class="nav-link" style="opacity:1; font-size:0.6rem">View Post ↗</a>
+                        </div>
+                        <span class="work-note">Full color grade & Sound design</span>
+                    </div>
+                </div>
+
+                <div class="work-card landscape" onclick="openVideo('https://www.youtube.com/embed/VIDEO_ID_2')">
+                    <img src="https://via.placeholder.com/600x337" class="work-thumb" alt="Thumb">
+                    <div class="play-icon">▶</div>
+                    <div class="work-info">
+                        <div class="work-top-row">
+                            <span class="work-platform">YouTube Long</span>
+                            <a href="https://youtube.com" target="_blank" class="nav-link" style="opacity:1; font-size:0.6rem">View Post ↗</a>
+                        </div>
+                        <span class="work-note">Only specific scenes graded</span>
+                    </div>
+                </div>
+
+                <div class="work-card landscape" onclick="openVideo('https://www.youtube.com/embed/VIDEO_ID_3')">
+                    <img src="https://via.placeholder.com/600x337" class="work-thumb" alt="Thumb">
+                    <div class="play-icon">▶</div>
+                    <div class="work-info">
+                        <div class="work-top-row">
+                            <span class="work-platform">YouTube Short</span>
+                            <a href="https://youtube.com" target="_blank" class="nav-link" style="opacity:1; font-size:0.6rem">View Post ↗</a>
+                        </div>
+                        <span class="work-note">Full edit & Motion graphics</span>
+                    </div>
+                </div>
+
+                <div class="work-card portrait" onclick="openVideo('https://www.youtube.com/embed/VIDEO_ID_4')">
+                    <img src="https://via.placeholder.com/300x533" class="work-thumb" alt="Thumb">
+                    <div class="play-icon">▶</div>
+                    <div class="work-info">
+                        <div class="work-top-row">
+                            <span class="work-platform">TikTok</span>
+                            <a href="https://tiktok.com" target="_blank" class="nav-link" style="opacity:1; font-size:0.6rem">View Post ↗</a>
+                        </div>
+                        <span class="work-note">Clean up & Color correction</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header"><span>02. Color Grading</span><h2>BEFORE / AFTER</h2></div>
+            <div class="comparison-container">
+                <div class="slider-label label-before">RAW FOOTAGE</div>
+                <div class="slider-label label-after">GRADED</div>
+                
+                <!-- VIMEO BEFORE (Using background=1 to hide controls and loop) -->
+                <iframe class="comparison-iframe" src="https://player.vimeo.com/video/1225882989?background=1&autoplay=1&loop=1&muted=1" allow="autoplay; fullscreen"></iframe>
+                
+                <!-- VIMEO AFTER (Using background=1 to hide controls and loop) -->
+                <iframe class="comparison-iframe iframe-after" src="https://player.vimeo.com/video/1225882991?background=1&autoplay=1&loop=1&muted=1" allow="autoplay; fullscreen"></iframe>
+                
+                <input type="range" min="0" max="100" value="50" class="comparison-slider" oninput="moveSlider(this.value)">
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header"><span>03. Motion</span><h2>ANIMATION WORK</h2></div>
+            <div class="animation-marquee">
+                <div class="marquee-track">
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+1" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+2" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+3" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+4" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+1" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+2" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+3" alt="GIF"></div>
+                    <div class="gif-item"><img src="https://via.placeholder.com/400x300?text=GIF+4" alt="GIF"></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header"><span>04. Cinematography</span><h2>STILLS GALLERY</h2></div>
+            <div class="stills-bento">
+                <div class="bento-item bento-1"><img src="https://via.placeholder.com/600x600" alt="Still 1"></div>
+                <div class="bento-item bento-2"><img src="https://via.placeholder.com/300x300" alt="Still 2"></div>
+                <div class="bento-item bento-3"><img src="https://via.placeholder.com/300x300" alt="Still 3"></div>
+                <div class="bento-item bento-4"><img src="https://via.placeholder.com/600x300" alt="Still 4"></div>
+                <div class="bento-item bento-5"><img src="https://via.placeholder.com/300x300" alt="Still 5"></div>
+                <div class="bento-item bento-6"><img src="https://via.placeholder.com/300x300" alt="Still 6"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="videoModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeVideo()">✕</span>
+            <iframe id="modalIframe" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div id="booking-overlay">
+        <button class="close-booking" onclick="closeBooking()">✕</button>
+        <div class="booking-container">
+            <h2 style="text-align:center;">START PROJECT</h2>
+            <form action="https://formspree.io/f/xwvzbkwo" method="POST">
+                <div class="input-group"><label>Name</label><input type="text" name="name" required></div>
+                <div class="input-group"><label>Email</label><input type="email" name="email" required></div>
+                <div class="input-group"><label>Project Vision</label><textarea name="message" rows="4" required></textarea></div>
+                <button type="submit" class="cta-main" style="width: 100%; margin: 2rem 0 0 0;">SEND REQUEST</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="socials">
+            <a href="https://youtube.com" target="_blank" class="social-link">YOUTUBE</a>
+            <a href="https://instagram.com" target="_blank" class="social-link">INSTAGRAM</a>
+            <a href="https://linkedin.com" target="_blank" class="social-link">LINKEDIN</a>
+            <a href="#" target="_blank" class="social-link">FIVERR</a>
+        </div>
+        <p style="font-size: 0.7rem; color: var(--muted); letter-spacing: 2px;">&copy; 2024 NPC STUDIO. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            body.getAttribute('data-theme') === 'light' ? body.removeAttribute('data-theme') : body.setAttribute('data-theme', 'light');
+        }
+
+        function openVideo(url) {
+            document.getElementById('modalIframe').src = url + "?autoplay=1";
+            document.getElementById('videoModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeVideo() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('modalIframe').src = "";
+            document.body.style.overflow = 'auto';
+        }
+
+        function moveSlider(value) {
+            document.querySelector('.iframe-after').style.clipPath = `inset(0 0 0 ${value}%)`;
+        }
+
+        function openBooking() { document.getElementById('booking-overlay').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        function closeBooking() { document.getElementById('booking-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+    </script>
+</body>
+</html>
